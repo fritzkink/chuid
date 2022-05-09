@@ -1,0 +1,92 @@
+.\" Process this file with
+.\" groff -man -Tascii chuid.1
+.\"
+.TH CHUID 1 "Last Change: 8 May 2022"
+.SH NAME
+chuid \- a tool for fast, parallel change of UID's/GID's according to a provided list of 2-tuples.
+.SH SYNOPSIS
+.B chuid [-h] [-v] [-n] [-q] [-o]
+.B [-t
+.I # of threads
+.B ] [-b
+.I busy threshold
+.B ] [-s 
+.I interval
+.B ] -i
+.I input file
+.B -d
+.I directory file
+.B -e
+.I exclude file
+.B -l
+.I logdir
+.SH DESCRIPTION
+chuid scans all filesystems given in the directory file and checks each regular file, directory or link 
+for UID and GID against the list of 2-tuples provided by the uidlist file. If there is a match
+with one of the entries the UID/GID will be changed with the corresponding new UID/GID.
+In all input files lines with a preceeding # or emtpy lines are ignored.
+.SH OPTIONS
+.IP "-i input file"
+input file containing old-uid new-uid respectively old-gid new-gid tuples. Valid lines must
+start with either 
+.I u:
+for a 2-tuple of UID's or with
+.I g:
+for a 2-tuple of GID's like
+.I u:<old UID> <new UID>
+or
+.I g:<old GID> <new GID>
+First ID is always old existing one and second ID is the replacement ID.
+Lines starting with other characters will print a warning as well as lines
+with more than two numbers or only one number.
+.IP "-d directory file"
+file containing root directories where changes should take place. One single absolute
+directory path per line.
+.IP "-e exclude file"
+file containing directories/files to exclude from changes. Either one single absolute 
+directory path or a single file name per line.
+.IP "-l logdir"
+logdir which will contain log output
+.IP "-t # of threads"
+number of threads (default 20)
+.IP "-b busy threshold"
+busy threshold for working threads out of allowed number of threads (default 0.9)
+.IP -v
+verbose mode
+.IP -h
+display short help
+.IP -q
+file systems will be traversed breath-first instead of depth-first
+(default). Not recommended - can be used to bypass any caches for
+benchmark reasons.
+.IP -o
+one stack version vs. two stack version (this allows a balancing if the
+difference between the fastest and the slowest file source is big)
+.IP -n
+dry run - shows files to be changed, but do not touch filesystem
+.IP "-s interval"
+print progress statistics every
+.I interval
+seconds
+.SH FILES
+.I <logdir>/chuid_log
+.RS
+contains all log information.
+
+.SH BUGS
+Please report bugs to info@fkink.de.
+.SH DIAGNOSTICS
+Please see the log file for more information.
+.SH AUTHOR
+Written by Hans Argenton and Fritz Kink
+.SH COPYRIGHT
+Copyright \(co 2009-2022 
+.br
+This is free software; see the source for copying conditions.  There
+is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.\" .SH "SEE ALSO"
+.\" .BR chuid.conf (5)
+.SH NOTES
+chuid has to run with root permissions as it changes resource soft/hard limits for file 
+descriptors to the maximum allowed. Also, this program assumes that it can access
+(at least for reading) all data which have to be scanned.
