@@ -88,7 +88,7 @@ conceptually to 0 and removed it from the design.
 (mutex-ed) count of busy threads to be 0. In this case, it wakes all other threads by
 signalling that work is finished.
  
-##### Two global stacks
+**Two global stacks**
 We generalize the one-global-stack concept to be able to choose between slow and fast
 sources: There are two global stacks---the fast stack and the slow stack, each has a
 speed associated with it 0; the fast stack is initialized with all file-system roots. The
