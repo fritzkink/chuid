@@ -16,11 +16,6 @@ be changed with the corresponding new UID/GID.
  
 3. Algorithm
  
-Central assumption underlying the algorithm is that the set of all reporting tree tops together
-with their result information fits into main memory. (For our analysis runs, this is no real
-restriction: With a reporting level of 2 and about 150,000 reporting directories all in all, we
-need about 1GB of main memory for the whole analysis.)
- 
 Our multi-threaded algorithm is based on the following two principles:
 - As file systems are by and large tree structures, scans of different subtrees are
 independent from each other: Synchronization is necessary only in case of files
@@ -28,9 +23,6 @@ referenced by hardlinks.
 - Threads need to dispatch work only when too many of them are idle.
  
 Therefore, threads should be synchronized only in these two cases.
-In particular, results in a reporting directory will be accumulated per thread; thus,
-synchronization for result recording is not needed during the scan.
- 
  
 ## Design
  
