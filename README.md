@@ -110,5 +110,13 @@ current speed of the slow stack; then, it removes an element from the slow
 stack. If the slow stack was empty, it takes an element from the fast stack; the
 counter remains 0.
  
+## Installation
+
+Download and unpack chiud package and change into new directory
+```
+./autogen.sh
+./configure
+make && make install
+```
  
 Hans Argenton & Fritz Kink, May 2022
