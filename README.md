@@ -2,21 +2,19 @@
  
 Chuid is a tool for fast, parallel change of UID's/GID's according to a provided list of 2-tuples.
  
-(1) Input Specification
-- a set of filesystems
-- a list of 2-tuples for old uid's and gid's and corresponding new values
-- the number of threads to be created
-- the busy-percentage threshold given as a number between 0 and 1
+1. Input Specification
+   * a set of filesystems
+   * a list of 2-tuples for old uid's and gid's and corresponding new values
+   * the number of threads to be created
+   * the busy-percentage threshold given as a number between 0 and 1
  
- 
-(2) Result Specification
+2. Result Specification
  
 For each regular file, directory or link UID and GID are checked against the list of 2-tuples
 provided by the uidlist file. If there is a match with one of the entries the UID/GID will
 be changed with the corresponding new UID/GID.
  
- 
-(3) Algorithm
+3. Algorithm
  
 Central assumption underlying the algorithm is that the set of all reporting tree tops together
 with their result information fits into main memory. (For our analysis runs, this is no real
@@ -24,19 +22,19 @@ restriction: With a reporting level of 2 and about 150,000 reporting directories
 need about 1GB of main memory for the whole analysis.)
  
 Our multi-threaded algorithm is based on the following two principles:
-(1)  As file systems are by and large tree structures, scans of different subtrees are
+- As file systems are by and large tree structures, scans of different subtrees are
 independent from each other: Synchronization is necessary only in case of files
 referenced by hardlinks.
-(2)  Threads need to dispatch work only when too many of them are idle.
+- Threads need to dispatch work only when too many of them are idle.
  
 Therefore, threads should be synchronized only in these two cases.
 In particular, results in a reporting directory will be accumulated per thread; thus,
 synchronization for result recording is not needed during the scan.
  
  
-Design
+## Design
  
-Scan Phase:
+### Scan Phase:
  
 -    Constant, configurable number of threads: no dynamic thread creation or deletion
 during the scan phase.
@@ -95,26 +93,26 @@ We generalize the one-global-stack concept to be able to choose between slow and
 sources: There are two global stacks---the fast stack and the slow stack, each has a
 speed associated with it 0; the fast stack is initialized with all file-system roots. The
 idea is that if a thread hands over its private-stack elements,
-(1)  It calculates its processing speed: The number of directory nodes it has
+   1.  It calculates its processing speed: The number of directory nodes it has
 processed since it took the last node from the global stacks divided by the time
 passed since then.
-(2)  It determines whether they go to the fast or to the slow stack: If the processing
+   2.  It determines whether they go to the fast or to the slow stack: If the processing
 speed from Step (1) is above or equal to the average of the two speeds of the
 stacks, the elements are prepended to the fast stack otherwise, they are
 prepended to the slow stack.
-(3)  The speed of the chosen stack is updated: new_speed = processing_speed
+   3.  The speed of the chosen stack is updated: new_speed = processing_speed
  
 Thus, each stack's speed is kept updated by transfer events; these two stack speeds are
 used for calculating how many elements are to be taken from the fast stack before the
 next element is removed from the slow stack:
  
-(1)  This ratio is represented by a global counter, initialized to 0.
-(2)  If a thread wants to take a new subtree root from the global stacks, it checks the
+   1. This ratio is represented by a global counter, initialized to 0.
+   2. If a thread wants to take a new subtree root from the global stacks, it checks the
 counter: If the counter has a value different from 0, it decrements it and
 removes an element from the fast stack. If the fast stack was empty, it
 recalculates the counter and takes an element from the slow stack (see next
 step).
-(3)  If  the counter is 0 and the slow stack is not empty, the thread sets the counter
+   3. If  the counter is 0 and the slow stack is not empty, the thread sets the counter
 to the ceiling of the ratio between the current speed of the fast stack and the
 current speed of the slow stack; then, it removes an element from the slow
 stack. If the slow stack was empty, it takes an element from the fast stack; the
