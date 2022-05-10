@@ -13,7 +13,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * Chuid 1.0 Design Documentation
+ * Chuid Design Documentation
  *
  * Chuid is a tool for fast, parallel change of UID's/GID's according to a provided list of 2-tuples.
  *
