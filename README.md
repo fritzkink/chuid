@@ -17,10 +17,10 @@ be changed with the corresponding new UID/GID.
 3. Algorithm
  
 Our multi-threaded algorithm is based on the following two principles:
-    a. As file systems are by and large tree structures, scans of different subtrees are
+- As file systems are by and large tree structures, scans of different subtrees are
 independent from each other: Synchronization is necessary only in case of files
 referenced by hardlinks.
-    b. Threads need to dispatch work only when too many of them are idle.
+- Threads need to dispatch work only when too many of them are idle.
  
 Therefore, threads should be synchronized only in these two cases.
  
