@@ -1,4 +1,4 @@
-# Chuid 1.0 Design Documentation
+# Chuid Design Documentation
  
 Chuid is a tool for fast, parallel change of UID's/GID's according to a provided list of 2-tuples.
  
@@ -17,10 +17,10 @@ be changed with the corresponding new UID/GID.
 3. Algorithm
  
 Our multi-threaded algorithm is based on the following two principles:
-- As file systems are by and large tree structures, scans of different subtrees are
+    a. As file systems are by and large tree structures, scans of different subtrees are
 independent from each other: Synchronization is necessary only in case of files
 referenced by hardlinks.
-- Threads need to dispatch work only when too many of them are idle.
+    b. Threads need to dispatch work only when too many of them are idle.
  
 Therefore, threads should be synchronized only in these two cases.
  
