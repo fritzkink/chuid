@@ -6,6 +6,8 @@ AC_INIT([chuid], [1.0], [info@fkink.de])
 AC_CONFIG_SRCDIR([src/chuid.c])
 AC_CONFIG_HEADERS([config.h])
 
+AC_CONFIG_AUX_DIR([build-aux])
+
 PKG_PROG_PKG_CONFIG
 
 CHUID_FEATURE_STRING="$PACKAGE_NAME $PACKAGE_VERSION:"
@@ -29,7 +31,7 @@ AM_CONDITIONAL([DEBUG], [test x"$enable_debug" == x"yes" ])
 AC_CHECK_LIB([m], [ceil])
 AC_CHECK_LIB([pthread], [pthread_mutex_lock])
 AC_SEARCH_LIBS([umem_reap], [umem], [], [
-  AC_MSG_ERROR([not using libumem])
+  AC_MSG_NOTICE([not using libumem])
 ])
 
 # Checks for header files.
@@ -45,8 +47,6 @@ AC_FUNC_MALLOC
 AC_FUNC_STRERROR_R
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([gettimeofday localtime_r memmove memset setlocale strcasecmp strchr strdup strerror strrchr strtol utime])
-
-AC_CONFIG_AUX_DIR([build-aux])
 
 AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
 
